@@ -1,0 +1,12 @@
+import solc from 'solc';
+import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
+import {resolve} from 'node:path';
+const source='contracts/RobIdentity.sol';
+const input={language:'Solidity',sources:{[source]:{content:readFileSync(source,'utf8')}},settings:{optimizer:{enabled:true,runs:200},viaIR:true,evmVersion:'cancun',outputSelection:{'*':{'*':['abi','evm.bytecode.object','evm.deployedBytecode.object']}}}};
+const output=JSON.parse(solc.compile(JSON.stringify(input),{import:name=>{if(!name.startsWith('@openzeppelin/contracts/'))return{error:'Unsupported import'};try{return{contents:readFileSync(resolve('node_modules',name),'utf8')}}catch{return{error:'Missing dependency: '+name}}}}));
+for(const error of output.errors||[])if(error.severity==='error')console.error(error.formattedMessage);
+if(output.errors?.some(error=>error.severity==='error'))process.exit(1);
+const c=output.contracts[source].RobIdentity;
+mkdirSync('artifacts',{recursive:true});
+writeFileSync('artifacts/RobIdentity.json',JSON.stringify({contractName:'RobIdentity',source,compiler:solc.version(),abi:c.abi,bytecode:'0x'+c.evm.bytecode.object,deployedBytecode:'0x'+c.evm.deployedBytecode.object},null,2)+'\n');
+console.log('RobIdentity compiled; no platform contracts included.');

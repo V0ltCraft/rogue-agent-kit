@@ -1,0 +1,30 @@
+{
+  "name": "@rogue-agentic/agent-kit",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "description": "ROGUE Agent wallet, installable Skill and open-source .rob identity contract.",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "compile": "node scripts/compile.mjs",
+    "check": "node scripts/check.mjs",
+    "test": "npm run compile && node --test --test-concurrency=1 tests/*.test.mjs"
+  },
+  "dependencies": {
+    "ethers": "6.17.0",
+    "@openzeppelin/contracts": "5.6.1"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2",
+    "hardhat": "3.21.1",
+    "solc": "0.8.26"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/V0ltCraft/rogue-agent-kit.git"
+  }
+}

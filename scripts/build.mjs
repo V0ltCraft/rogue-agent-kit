@@ -1,0 +1,10 @@
+import {build} from 'esbuild';
+import {mkdirSync,readFileSync,writeFileSync,readdirSync,copyFileSync} from 'node:fs';
+mkdirSync('skills/rogue-launch/scripts',{recursive:true});
+const result=await build({entryPoints:['agent/cli.mjs'],outfile:'skills/rogue-launch/scripts/rogue.mjs',bundle:true,format:'esm',platform:'node',target:'node22',minify:true,legalComments:'eof',metafile:true});
+const packages=[...new Set(Object.keys(result.metafile.inputs).map(path=>path.match(/^node_modules\/(?:@[^/]+\/)?[^/]+/)?.[0]).filter(Boolean))].sort();
+const notices=packages.map(folder=>{const meta=JSON.parse(readFileSync(folder+'/package.json','utf8')),license=readdirSync(folder).find(name=>/^licen[cs]e(?:\.(?:md|txt))?$/i.test(name));if(!license)throw Error('Missing bundled license for '+folder);return `## ${meta.name} ${meta.version}\n\n${readFileSync(folder+'/'+license,'utf8')}\n`;});
+writeFileSync('skills/rogue-launch/THIRD_PARTY_NOTICES.md',('# Bundled third-party licenses\n\n'+notices.join('\n')).trimEnd()+'\n');
+copyFileSync('LICENSE','skills/rogue-launch/LICENSE');
+await import('./package-skill.mjs');
+console.log('Skill built from the public Agent client source.');

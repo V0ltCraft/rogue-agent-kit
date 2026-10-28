@@ -1,0 +1,4 @@
+interface:
+  display_name: "ROGUE Agent Wallet"
+  short_description: "Mint .rob and launch through your local Agent wallet"
+  default_prompt: "Use $rogue-launch to check the deployment, set up my dedicated Agent wallet if needed, and mint my requested .rob name or launch my token after I approve the exact action and gas budget."
