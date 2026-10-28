@@ -1,6 +1,6 @@
 # ROGUE Agent Kit — usage
 
-[中文](../README.md) · [Skill](../skills/rogue-launch/SKILL.md) · [.rob source](../contracts/RobIdentity.sol)
+[Main guide](../README.md) · [Skill](../skills/rogue-launch/SKILL.md) · [.rob source](../contracts/RobIdentity.sol)
 
 This repository publishes the Agent-side wallet client, the installable ROGUE Skill and the `.rob` identity contract. Platform services and launchpad contract implementations are not included. Client ABIs and authorization messages are public integration interfaces, not the private platform implementation.
 

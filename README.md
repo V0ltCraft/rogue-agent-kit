@@ -1,40 +1,42 @@
+![ROGUE banner](assets/rogue-banner.png)
+
 # ROGUE Agent Kit
 
-ROGUE 的公开 Agent 工具包：安装 Skill、创建专用钱包、铸造 `.rob` 身份，并让 Agent 为你准备和执行已授权的发币操作。
+The open-source toolkit for ROGUE: install the Skill, create a dedicated Agent wallet, mint your `.rob` identity, and let your Agent prepare and execute token launches you authorize.
 
-[English guide](docs/README.en.md) · [Skill 指令](skills/rogue-launch/SKILL.md) · [.rob 合约说明](docs/rob-identity.md) · [官网](https://45.76.202.123:8443/#agents)
+[Get the Skill](https://github.com/V0ltCraft/rogue-agent-kit/releases/latest) · [Skill instructions](skills/rogue-launch/SKILL.md) · [.rob contract guide](docs/rob-identity.md) · [Website](https://45.76.202.123:8443/#agents)
 
-**注册与发币即将开放。** 工具可以安装、源码可以编译和测试；能否进行链上操作，以所选服务的 `config` 返回结果为准。当前没有在本仓库公布已上线的合约地址。
+**Registration and token launches open soon.** You can install the toolkit, inspect its source, and run local tests now. Before any onchain action, check the selected service with `config`. No live contract address is announced in this repository.
 
-## 公开范围
+## What is included
 
-| 内容 | 位置 |
+| Component | Location |
 | --- | --- |
-| 可直接安装的 Skill 与打包后的命令行工具 | `skills/rogue-launch/` |
-| 本机加密钱包、交易检查和执行客户端 | `agent/` |
-| `.rob` 注册、解析及 Agent 授权密钥绑定合约 | `contracts/RobIdentity.sol` |
-| 客户端名称规则、授权消息格式及服务校验字段 | `shared/` |
-| 仅针对本工具包的编译、打包和本地测试 | `scripts/`、`tests/` |
+| Installable Skill and standalone command-line tool | `skills/rogue-launch/` |
+| Local encrypted wallet, transaction validation, and execution client | `agent/` |
+| `.rob` registration, name resolution, and Agent signer binding | `contracts/RobIdentity.sol` |
+| Client name rules, authorization messages, and service verification fields | `shared/` |
+| Toolkit compilation, packaging, and local tests | `scripts/`, `tests/` |
 
-平台后端、网站、代币工厂、联合曲线、Uniswap v4 流动性实现、手续费与回购金库实现不在此仓库中。客户端通过平台 API 使用服务；包含的接口与消息格式不是上述平台合约的实现源码。
+The platform backend, website, token factory, bonding curve, Uniswap v4 liquidity implementation, and revenue and buyback contracts are not included. The client uses the platform API; its interfaces and message formats do not contain those platform implementations.
 
-## 1. 安装 Skill
+## 1. Install the Skill
 
-Agent 所在设备需要 **Node.js 22.13 或更新版本**。
+Your Agent's device needs **Node.js 22.13 or newer**.
 
-- 从 [Releases](https://github.com/V0ltCraft/rogue-agent-kit/releases/latest) 下载 `rogue-launch.zip` 和 `rogue-launch.sha256`，校验压缩包的 SHA-256 后解压。
-- 将 `rogue-launch` 文件夹放入你的 Agent 支持的 Skill 目录。Codex 对应 `~/.codex/skills/rogue-launch/`；Windows 对应 `%USERPROFILE%\.codex\skills\rogue-launch\`。其他 Agent 请使用其自己的 Skill 安装位置。
-- 确认该文件夹下有 `SKILL.md` 和 `scripts/rogue.mjs`。压缩包已经包含命令行工具，使用时无需安装 npm 依赖。
+1. Download `rogue-launch.zip` and `rogue-launch.sha256` from [Releases](https://github.com/V0ltCraft/rogue-agent-kit/releases/latest). Verify the archive's SHA-256 checksum, then extract it.
+2. Copy the `rogue-launch` folder into your Agent's supported skills directory. For Codex, use `~/.codex/skills/rogue-launch/`, or `%USERPROFILE%\.codex\skills\rogue-launch\` on Windows. Other Agents use their own installation location.
+3. Confirm that the folder contains `SKILL.md` and `scripts/rogue.mjs`. The archive includes a standalone tool, so no npm install is needed to use it.
 
-也可以克隆仓库后，直接复制 `skills/rogue-launch/`。该目录内的脚本由本仓库的公开源码构建。
+You can also clone this repository and copy `skills/rogue-launch/` directly. Its bundled script is built from the public source in this repository.
 
-把以下任务交给你的 Agent：
+Give your Agent a task like this:
 
-> 使用 ROGUE Skill，先检查服务和网络。帮助我创建专用 Agent 钱包，并注册我选择的 .rob 名称。请先展示操作、费用和 Gas 上限，经我确认后再执行。密码由我在设备上设置，不在聊天中发送。
+> Use the ROGUE Skill to check the service and network first. Help me create a dedicated Agent wallet and register my chosen .rob name. Show the exact action, fees, and gas cap before execution, and wait for my authorization. I will set the wallet password locally; do not ask me to send it in chat.
 
-## 2. 设置服务与钱包
+## 2. Set up your wallet
 
-`ROGUE_ORIGIN` 默认使用 `https://45.76.202.123:8443`。如需切换服务，先明确确认新的网址与网络。下面的命令从安装后的 `rogue-launch` 目录执行：
+`ROGUE_ORIGIN` defaults to `https://45.76.202.123:8443`. Confirm any change of service or network before continuing. Run these commands from the installed `rogue-launch` folder:
 
 ```sh
 node scripts/rogue.mjs config
@@ -42,15 +44,15 @@ node scripts/rogue.mjs wallet-init
 node scripts/rogue.mjs wallet-status
 ```
 
-创建钱包前，请在 **Agent 所在设备的进程环境** 设置 `ROGUE_WALLET_PASSWORD`，至少 12 个字符。不要把密码、私钥或钱包备份提交到 GitHub、发给网站或贴进对话。
+Before wallet creation, set `ROGUE_WALLET_PASSWORD` in the **local Agent process environment**, using at least 12 characters. Never commit passwords, private keys, or wallet backups to GitHub, send them to the website, or paste them into chat.
 
-钱包默认保存在 `~/.rogue/agent-wallet.json`，包含交易钱包和独立 Agent 授权密钥的加密 keystore。用 `ROGUE_WALLET_FILE` 可以指定其他路径。工具不会覆盖已有钱包，也不会自动从其他钱包转入资金。
+The wallet file defaults to `~/.rogue/agent-wallet.json`. It contains encrypted keystores for the transaction wallet and a separate Agent authorization key. Set `ROGUE_WALLET_FILE` to choose another location. The tool does not overwrite existing wallets or automatically transfer funds from another wallet.
 
-备份加密文件，并将密码分开保存。仅向工具显示的交易钱包地址充值正确网络的 ETH。`.rob` 注册本身免费，提交交易仍需网络 Gas。这个钱包是本机加密的 EOA，不是 MPC，也不是 Robinhood 官方提供的 Agentic Wallet。
+Back up the encrypted file and keep its password separately. Fund only the displayed transaction wallet address with ETH on the selected network. Registration has no protocol fee, but network gas is required. This is a locally encrypted EOA wallet, not MPC or an official Robinhood Agentic Wallet.
 
-## 3. 铸造你的 .rob
+## 3. Mint your .rob identity
 
-当 `config` 显示 `configured: true` 且 `executionEnabled: true` 时，先让 Agent 核对服务、网络和合约，再配置你批准的**单次完整操作 Gas 上限**：
+When `config` returns both `configured: true` and `executionEnabled: true`, have your Agent verify the service, network, and contracts. Then configure your approved **gas cap for one complete action**:
 
 ```sh
 node scripts/rogue.mjs wallet-configure --max-fee-eth YOUR_APPROVED_GAS_CAP
@@ -58,36 +60,36 @@ node scripts/rogue.mjs name --name ranger.rob
 node scripts/rogue.mjs register --name ranger.rob
 ```
 
-把 `YOUR_APPROVED_GAS_CAP` 换成你实际批准的 ETH 数值。示例名称 `ranger.rob` 也应换成你自己的名称。
+Replace `YOUR_APPROVED_GAS_CAP` with the ETH amount you actually approve. Replace the example `ranger.rob` with your chosen name.
 
-`register` 会返回注册计划、`id` 和 `approvalHash`，**还没有提交铸造交易**。检查名称、钱包、网络、绑定的 Agent 地址及 Gas 上限后，让 Agent 执行：
+`register` returns a plan, an `id`, and an `approvalHash`. **It has not submitted the minting transactions yet.** Review the name, wallet, network, bound Agent address, and gas cap before asking your Agent to execute:
 
 ```sh
 node scripts/rogue.mjs wallet-execute --intent RETURNED_ID --approve RETURNED_APPROVAL_HASH
 node scripts/rogue.mjs identity
 ```
 
-将两个占位符换成此次计划返回的值。注册包含 commit 和 reveal 两笔交易，必须跨过至少一个区块，且 reveal 需要在承诺有效期内完成。遇到 `pending` 或 `waiting_for_block` 时，继续执行**同一条命令**，不要新建替代注册计划。成功结果以实际链上回执为准。
+Replace both placeholders with the values returned for that plan. Registration uses a commit transaction followed by a reveal transaction in a later block, within the commitment's validity period. After `pending` or `waiting_for_block`, resume the **same command** rather than creating a replacement registration plan. Only confirmed onchain receipts count as a successful registration.
 
-### .rob 的规则
+### Name rules
 
-- 3–24 位小写英文字母、数字或内部连字符；名称唯一。
-- 每个钱包只能注册一个名称，不能改名、转让或销毁。
-- 注册时绑定独立 Agent 授权密钥；钱包持有人可以更新该密钥。
-- `.rob` 是 ROGUE 的链上身份名称，不是互联网 DNS 域名，也不证明某个 LLM 实际运行过。
+- Unique labels of 3–24 lowercase ASCII letters, digits, or internal hyphens.
+- One permanent name per wallet; no rename, transfer, or burn.
+- Registration binds a separate Agent authorization key. The wallet owner can rotate that key.
+- `.rob` is a ROGUE onchain identity namespace, not Internet DNS or proof that an LLM ran.
 
-## 4. 交给 Agent 发币
+## 4. Launch with your Agent
 
-完成 `.rob` 注册、且服务已开放后：
+After `.rob` registration, once the service is open:
 
 ```sh
 node scripts/rogue.mjs launch --name "My Ranger" --symbol RGR --metadata-uri YOUR_APPROVED_PUBLIC_METADATA_URI
 node scripts/rogue.mjs wallet-execute --intent RETURNED_ID --approve RETURNED_APPROVAL_HASH
 ```
 
-使用你确认的名称、符号和公开 HTTPS / IPFS 资料地址。每次发币都会生成新的 Agent 授权和待确认计划；钱包 Gas 策略不等于对未来所有交易的授权。客户端只允许注册和发币，不提供任意转账或授权执行。
+Use your approved name, ticker, and public HTTPS or IPFS metadata URI. Every launch requires a fresh Agent authorization and exact plan approval. A gas policy does not authorize future transactions. The executor permits registration and token launches only; it does not execute arbitrary transfers or approvals.
 
-## 从源码构建与测试
+## Build and test
 
 ```sh
 npm ci
@@ -96,10 +98,10 @@ npm run build
 npm test
 ```
 
-`npm run build` 重新生成安装目录中的独立脚本，以及 `artifacts/rogue-launch.zip` 和校验文件。`npm test` 只在本机 EVM 中测试 `.rob` 合约与客户端规则，不部署外部网络合约，也不发送真实资产交易。
+`npm run build` regenerates the standalone Skill script, `artifacts/rogue-launch.zip`, and its checksum file. Tests run the identity contract and client checks on a local EVM only. They do not deploy public-chain contracts or send real asset transactions.
 
-本仓库不提供平台合约的部署脚本。若要独立部署身份合约，请先阅读 [.rob 合约说明](docs/rob-identity.md)；独立部署的身份不会自动成为 ROGUE 平台认可的身份。
+This repository has no platform deployment scripts. Read the [.rob contract guide](docs/rob-identity.md) before using the identity contract independently. A separately deployed identity registry is not automatically accepted by the ROGUE platform.
 
 ## License
 
-MIT。打包工具包含的第三方依赖许可证见 `skills/rogue-launch/THIRD_PARTY_NOTICES.md`。
+MIT. Bundled dependency licenses are included in `skills/rogue-launch/THIRD_PARTY_NOTICES.md`.
