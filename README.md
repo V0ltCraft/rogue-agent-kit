@@ -4,7 +4,7 @@
 
 The open-source toolkit for ROGUE: install the Skill, create a dedicated Agent wallet, mint your `.rob` identity, and let your Agent prepare and execute token launches you authorize.
 
-[Get the Skill](https://github.com/V0ltCraft/rogue-agent-kit/releases/latest) · [Skill instructions](skills/rogue-launch/SKILL.md) · [.rob contract guide](docs/rob-identity.md) · [Website](https://45.76.202.123:8443/#agents)
+[Get the Skill](https://github.com/V0ltCraft/rogue-agent-kit/releases/latest) · [Skill instructions](skills/rogue-launch/SKILL.md) · [.rob contract guide](docs/rob-identity.md) · [Website](https://rogueagentic.app/)
 
 **Registration and token launches open soon.** You can install the toolkit, inspect its source, and run local tests now. Before any onchain action, check the selected service with `config`. No live contract address is announced in this repository.
 
